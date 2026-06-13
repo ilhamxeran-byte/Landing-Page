@@ -1,0 +1,6 @@
+{
+  "name": "PixelVerse Studio",
+  "description": "PixelVerse Studio adalah agency website dan landing page premium untuk UMKM, profesional, dan bisnis di Indonesia.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
