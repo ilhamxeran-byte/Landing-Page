@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Calculator, CheckSquare, Square, Check, MessageSquare, ArrowRight, Sparkles, Send, ShieldAlert, BadgeInfo } from "lucide-react";
+import { Calculator, CheckSquare, Square, Check, MessageSquare, ArrowRight, Sparkles, Send, ShieldAlert, BadgeInfo, FileText, CloudRain, RefreshCw } from "lucide-react";
 import { InquiryFormState } from "../types";
 import { useLanguage } from "./LanguageContext";
+import { getCachedToken, createProposalFile } from "../lib/googleDriveService";
 
 interface PricingCalculatorProps {
   selectedServiceId: string;
@@ -10,6 +11,17 @@ interface PricingCalculatorProps {
 
 export default function PricingCalculator({ selectedServiceId }: PricingCalculatorProps) {
   const { language } = useLanguage();
+  const [driveToken, setDriveToken] = useState<string | null>(null);
+  const [saveProgress, setSaveProgress] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
+
+  // Check for Drive connection on render
+  useEffect(() => {
+    const token = getCachedToken();
+    if (token) {
+      setDriveToken(token);
+    }
+  }, []);
 
   // Base plan packages setup
   const basePackages = [
@@ -188,6 +200,71 @@ Mohon verifikasi ketersediaan slot pembuatannya. Terima kasih!`;
       window.open(whatsUrl, "_blank");
     } catch (e) {
       console.warn("Iframe blocked window.open, fallback link generated instead.");
+    }
+  };
+
+  const handleSaveToDrive = async () => {
+    if (!driveToken) return;
+    
+    const clientName = formState.name ? formState.name.trim() : "Guest Client";
+    const bizName = formState.businessName ? formState.businessName.trim() : "My Business";
+    if (!formState.name.trim() || !formState.businessName.trim()) {
+      setValidationError(
+        language === "id"
+          ? "Mohon isi Nama Lengkap dan Nama Bisnis Anda untuk mengekspor proposal ke Google Drive."
+          : "Please specify Your Full Name and Company Name to export the proposal."
+      );
+      return;
+    }
+    
+    setSaveProgress(language === "id" ? "Menyimpan ke Drive..." : "Saving to Google Drive...");
+    setSaveSuccess(false);
+    setValidationError(null);
+    
+    try {
+      const selectedPkg = basePackages.find((p) => p.id === formState.serviceId);
+      const selectedNicheLabel = niches.find((n) => n.value === formState.businessNiche)?.label || formState.businessNiche;
+
+      const addonsText = formState.customFeatures.length > 0
+        ? formState.customFeatures.map((id) => `- ${boostersList.find((b) => b.id === id)?.name}`).join("\n")
+        : "- Tidak ada booster tambahan";
+
+      const fileContent = `================================================
+PIXELVERSE STUDIO - PLATINUM ESTIMATE REPORT
+================================================
+Client Representative : ${clientName}
+Company Brand Name    : ${bizName}
+Business Industry     : ${selectedNicheLabel}
+Target Budget Segment : ${formState.budgetRange}
+
+------------------------------------------------
+CONFIGURED SERVICES & BLUEPRINT MOCKUPS
+------------------------------------------------
+Main Web Package      : ${selectedPkg?.name}
+Production Timeframe  : ${estimateDays}
+
+Custom Booster Addons Added:
+${addonsText}
+
+Requirements & Notes:
+${formState.notes || "-"}
+
+------------------------------------------------
+INVESTMENT EVALUATION RESULT
+------------------------------------------------
+Estimated Value       : ${formatCurrency(totalPrice)} ${formState.serviceId === "maintenance" ? "/ Month" : ""}
+
+================================================
+Generated safely via Google Drive Business Sync.
+================================================`;
+
+      const proposalName = `PixelVerse-Estimate-${bizName.replace(/[^a-zA-Z0-9]/g, "_")}`;
+      await createProposalFile(driveToken, proposalName, fileContent);
+      setSaveSuccess(true);
+    } catch (err: any) {
+      setValidationError(err.message || "Failed to save proposal file to Google Drive.");
+    } finally {
+      setSaveProgress(null);
     }
   };
 
@@ -507,6 +584,40 @@ Mohon verifikasi ketersediaan slot pembuatannya. Terima kasih!`;
                 <span>{language === "en" ? "Generate & Send Proposal" : language === "ja" ? "見積書を出力して直接WhatsAppに予約" : language === "ar" ? "توليد وإرسال المقترح للواتساب" : language === "zh" ? "一键生成数字预算并抄送至技术团队" : "Hasilkan & Kirim Proposal WA"}</span>
                 <Send className="w-4 h-4 text-cyan-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </button>
+
+              {driveToken && (
+                <div className="pt-3 border-t border-cosmic-border/30 mt-3 space-y-2">
+                  <button
+                    type="button"
+                    onClick={handleSaveToDrive}
+                    disabled={!!saveProgress}
+                    className="w-full inline-flex items-center justify-center space-x-2 py-3 rounded-xl bg-cyan-950/20 hover:bg-cyan-950/45 border border-cyan-500/30 text-cyan-400 hover:text-cyan-300 font-bold text-xs tracking-wider transition-all disabled:opacity-50"
+                  >
+                    {saveProgress ? (
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <FileText className="w-3.5 h-3.5" />
+                    )}
+                    <span>
+                      {saveProgress 
+                        ? saveProgress 
+                        : (language === "id" ? "Simpan Proposal ke Google Drive" : "Save Estimate to Google Drive")}
+                    </span>
+                  </button>
+
+                  {saveSuccess && (
+                    <motion.p 
+                      initial={{ opacity: 0, y: 5 }} 
+                      animate={{ opacity: 1, y: 0 }} 
+                      className="text-[11px] text-emerald-400 text-center font-sans font-semibold"
+                    >
+                      ✓ {language === "id" 
+                        ? "Proposal berhasil disimpan ke Google Drive Anda!" 
+                        : "Estimate successfully saved to your Google Drive!"}
+                    </motion.p>
+                  )}
+                </div>
+              )}
 
             </div>
 

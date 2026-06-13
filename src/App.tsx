@@ -11,6 +11,7 @@ import Hero from "./components/Hero";
 import Services from "./components/Services";
 import Portfolio from "./components/Portfolio";
 import PricingCalculator from "./components/PricingCalculator";
+import DriveWorkspace from "./components/DriveWorkspace";
 import ClientBlueprint from "./components/ClientBlueprint";
 import AboutFAQ from "./components/AboutFAQ";
 import Footer from "./components/Footer";
@@ -18,7 +19,7 @@ import { useLanguage } from "./components/LanguageContext";
 
 export default function App() {
   const { t, language } = useLanguage();
-  const [activePage, setActivePage] = useState<"home" | "services" | "pricing" | "about" | "contact">("home");
+  const [activePage, setActivePage] = useState<"home" | "services" | "pricing" | "workspace" | "about" | "contact">("home");
   const [selectedServiceId, setSelectedServiceId] = useState("landing-page");
 
   // Contact Form States
@@ -455,6 +456,20 @@ export default function App() {
                   </div>
                 </div>
               </section>
+            </motion.div>
+          )}
+
+          {/* PAGE: WORKSPACE (GOOGLE DRIVE PORTAL) */}
+          {activePage === "workspace" && (
+            <motion.div
+              key="workspace-page"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.35 }}
+              className="py-16 md:py-24"
+            >
+              <DriveWorkspace />
             </motion.div>
           )}
 

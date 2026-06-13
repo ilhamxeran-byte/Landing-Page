@@ -19,7 +19,8 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.pricing": "Harga",
     "nav.about": "Tentang Kami",
     "nav.contact": "Kontak",
-    "nav.cta": "+62 857-3330-9949",
+    "nav.workspace": "Workspace",
+    "nav.cta": "Konsultasi",
     "nav.mobile_cta": "Konsultasi WhatsApp Gratis",
     
     // Header language text
@@ -156,7 +157,8 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.pricing": "Pricing",
     "nav.about": "About Us",
     "nav.contact": "Contact",
-    "nav.cta": "+62 857-3330-9949",
+    "nav.workspace": "Workspace Portal",
+    "nav.cta": "Consultation",
     "nav.mobile_cta": "Free WhatsApp Consultation",
     
     // Header language text
@@ -293,7 +295,8 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.pricing": "料金",
     "nav.about": "会社概要",
     "nav.contact": "お問い合わせ",
-    "nav.cta": "+62 857-3330-9949",
+    "nav.workspace": "ワークスペース",
+    "nav.cta": "無料相談",
     "nav.mobile_cta": "無料WhatsApp相談",
     
     // Header language text
@@ -430,7 +433,8 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.pricing": "الأسعار",
     "nav.about": "من نحن",
     "nav.contact": "اتصل بنا",
-    "nav.cta": "+62 857-3330-9949",
+    "nav.workspace": "بوابة العمل",
+    "nav.cta": "استشارة مجانية",
     "nav.mobile_cta": "استشارة مجانية عبر واتساب",
     
     // Header language text
@@ -567,7 +571,8 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.pricing": "价格方案",
     "nav.about": "关于我们",
     "nav.contact": "联系我们",
-    "nav.cta": "+62 857-3330-9949",
+    "nav.workspace": "云端工作台",
+    "nav.cta": "免费咨询",
     "nav.mobile_cta": "免费 WhatsApp 咨询通道",
     
     // Header language text

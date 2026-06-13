@@ -62,6 +62,7 @@ export default function Header({ activePage, onPageChange }: HeaderProps) {
     { id: "home", label: t("nav.home") },
     { id: "services", label: t("nav.services") },
     { id: "pricing", label: t("nav.pricing") },
+    { id: "workspace", label: t("nav.workspace") },
     { id: "about", label: t("nav.about") },
     { id: "contact", label: t("nav.contact") },
   ];
@@ -175,7 +176,7 @@ export default function Header({ activePage, onPageChange }: HeaderProps) {
                 className="flex items-center space-x-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-semibold text-sm px-5 py-2.5 rounded-xl border border-violet-400/20 shadow-md shadow-violet-500/20 hover:shadow-violet-500/30 transform hover:-translate-y-0.5 transition-all duration-300 group"
               >
                 <Phone className="w-4 h-4 text-cyan-400 group-hover:rotate-12 transition-transform duration-300" />
-                <span>+62 857-3330-9949</span>
+                <span>{t("nav.cta")}</span>
               </a>
             </div>
           </div>
